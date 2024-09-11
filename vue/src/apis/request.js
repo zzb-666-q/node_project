@@ -41,7 +41,6 @@ const stopRepeatRequest = function (reqList, url, cancel, errorMessage) {
     }
   }
   reqList.push(url);
-  console.log('reqList', reqList);
 };
 
 /**
@@ -62,10 +61,6 @@ const allowRequest = function (reqList, url) {
 service.interceptors.request.use(
   (config) => {
     // 是否需要设置 token
-    // const isToken = (config.headers || {}).isToken === false
-    // 是否需要防止数据重复提交
-    const isRepeatSubmit = (config.headers || {}).repeatSubmit === false;
-
     if (tokenUrl.indexOf(config.url) > -1) {
       //获取cookie
       let token = Vue.$cookies.get('token');
@@ -183,7 +178,7 @@ service.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-const interval = 2000; // 间隔时间(ms)，小于此时间视为重复提交
+const interval = 1000; // 间隔时间(ms)，小于此时间视为重复提交
 
 service.interceptors.response.use(
   (res) => {

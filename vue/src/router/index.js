@@ -90,6 +90,12 @@ const routes = [
             alias: '',
             component: () => import('@/views/utils/queryFile.vue'),
           },
+          {
+            path: 'categoryListings',
+            name: 'categoryListings',
+            alias: '',
+            component: () => import('@/views/utils/categoryListings.vue'),
+          },
         ],
       },
     ],

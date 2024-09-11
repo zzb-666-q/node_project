@@ -93,6 +93,11 @@ export default {
               itemIndex: "/utils/queryFile",
               itemName: "查询文件工具",
               // itemIconClass: "el-icon-cloudy-and-sunny",
+            },
+            {
+              itemIndex: "/utils/categoryListings",
+              itemName: "分类列表创建",
+              // itemIconClass: "el-icon-cloudy-and-sunny",
             }
           ],
         },

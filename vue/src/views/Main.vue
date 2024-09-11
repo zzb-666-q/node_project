@@ -7,9 +7,13 @@
       </div>
       <div class="right-box">
         <div class="user-img">
-          <img :src="completionImg(userInfo.userImg)" alt="" v-show="userInfo.userImg" />
+          <img
+            :src="completionImg(userInfo.userImg)"
+            alt=""
+            v-show="userInfo.userImg"
+          />
         </div>
-        <div class="user-email" @click="getUserInfo">{{ userInfo.email }}</div>
+        <div class="user-email">{{ userInfo.email }}</div>
         <!-- <div class="settings" @click="goLogin">登录</div> -->
         <div class="settings" @click="LoginOut">退出登录</div>
       </div>
@@ -22,47 +26,46 @@
 </template>
 
 <script>
-import { getuserInfo, loginOut } from "@/apis/user";
+import { getuserInfo, loginOut } from '@/apis/user';
 
 export default {
-  name: "Main",
+  name: 'Main',
   data() {
     return {
       userInfo: {
-        email: "",
-        password: "",
-        userImg: "",
+        email: '',
+        password: '',
+        userImg: '',
       },
     };
   },
   created() {
-
-
-    // if (!this.$store.state.username) {
-    this.getUserInfo();
-    // }
+    let userInfo = this.$cookies.get('userInfo');
+    if (!userInfo) {
+      this.getUserInfo();
+    } else {
+      this.userInfo = userInfo;
+    }
   },
-  mounted() {
-
-  },
+  mounted() {},
   methods: {
     goLogin() {
-      this.$router.push({ name: "login" });
+      this.$router.push({ name: 'login' });
     },
     //获取用户信息
     getUserInfo() {
       getuserInfo().then((result) => {
-
-
         this.userInfo = { ...result.data.result };
-        this.$store
-          .dispatch("Login", this.userInfo)
-          .then(() => {
-            // console.log(`output->this.$store.state`, this.$store.state);
-          })
-          .catch((err) => {
-            console.log(`output->err`, err);
-          });
+        this.$cookies.set('userInfo', result.data.result, '1d');
+
+        // this.$store
+        //   .dispatch('Login', this.userInfo)
+        //   .then(() => {
+        //     // console.log(`output->this.$store.state`, this.$store.state);
+        //   })
+        //   .catch((err) => {
+        //     console.log(`output->err`, err);
+        //   });
       });
 
       // if (result.data.code === 200) {
@@ -74,29 +77,28 @@ export default {
       //   });
       //   this.goLogin();
       // }
-
     },
 
     LoginOut() {
-      this.$confirm(`确定注销并退出系统吗？`, "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
+      this.$confirm(`确定注销并退出系统吗？`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
       })
         .then(() => {
           this.$message({
-            type: "success",
+            type: 'success',
             message: `退出登录成功`,
           });
           loginOut().then((res) => {
-            console.log("res", res);
-            this.$cookies.remove("token", "");
+            console.log('res', res);
+            this.$cookies.remove('token', '');
             this.goLogin();
           });
         })
         .catch(() => {
           this.$message({
-            type: "info",
+            type: 'info',
             message: `已取消退出登录`,
           });
         });

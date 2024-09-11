@@ -139,7 +139,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="操作" align="center" width="300">
+        <el-table-column label="操作" align="center" width="300" fixed>
           <template slot-scope="scope">
             <el-button size="mini" @click="editProduct(scope.row.productId)"
               >编辑</el-button

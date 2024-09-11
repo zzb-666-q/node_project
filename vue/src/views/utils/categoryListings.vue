@@ -41,7 +41,7 @@
         >
       </div>
     </div>
-    <div class="list-box">
+    <!-- <div class="list-box">
       <el-table
         :data="tableData"
         style="width: 100%"
@@ -70,17 +70,7 @@
         </el-table-column>
 
         <el-table-column label="操作">
-          <template slot-scope="scope">
-            <el-button size="mini" @click="editType(scope.row.typeId)"
-              >编辑</el-button
-            >
-            <el-button
-              size="mini"
-              type="danger"
-              @click="removeType(scope.row.typeId)"
-              >删除</el-button
-            >
-          </template>
+          <template slot-scope="scope"> </template>
         </el-table-column>
       </el-table>
       <div class="page-box">
@@ -92,50 +82,19 @@
           @pagination="getList"
         />
       </div>
-    </div>
-
-    <el-dialog
-      title="提示"
-      :visible.sync="centerDialogVisible"
-      width="30%"
-      :modal="false"
-      @closed="closeDialog"
-      center
+    </div> -->
+    <el-tree
+      :data="data"
+      :props="defaultProps"
+      accordion
+      @node-click="handleNodeClick"
     >
-      <div class="dialog-title">是否确认删除商品类型？</div>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="centerDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="confirmRemoveType">确 定</el-button>
-      </span>
-    </el-dialog>
-    <el-dialog
-      title="创建商品类型"
-      :visible.sync="openType"
-      width="30%"
-      :modal="false"
-      @closed="closeDialog"
-      center
-    >
-      <el-form
-        ref="typeData"
-        :model="typeData"
-        label-width="80px"
-        :rules="rules"
-      >
-        <el-form-item label="商品类型" prop="name">
-          <el-input v-model="typeData.name"></el-input>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="openType = false">取 消</el-button>
-        <el-button type="primary" @click="commit('typeData')">确 定</el-button>
-      </span>
-    </el-dialog>
+    </el-tree>
   </div>
 </template>
 
 <script>
-import { userTypeList, createType, editType } from '@/apis/product';
+import { userTypeList, createType } from '@/apis/product';
 export default {
   name: 'TypeList',
   data() {
@@ -158,7 +117,7 @@ export default {
         typeId: '',
       },
       rules: {
-        name: [{ required: true, message: '不能为空', trigger: 'blur' }],
+        name: [{ required: true, message: '邮箱不能为空', trigger: 'blur' }],
       },
     };
   },
@@ -176,10 +135,12 @@ export default {
       this.resetForm(formName);
       this.search();
     },
+
     //创建商品类型
     createType(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
+          console.log('表单验证通过');
           createType(this.typeData).then((res) => {
             this.openType = false;
             this.search();
@@ -189,21 +150,26 @@ export default {
       });
     },
     //编辑商品类型
-    editType(typeId) {
-      this.openType = true;
-      this.typeData.typeId = typeId;
-    },
-    //编辑商品类型
-    confirmeditType() {
-      // if (this.typeId) {
-      //   this.typeData.typeId = this.typeId;
-      // }
+    editType() {
+      if (this.copyName === this.typeData.name) {
+        console.log('和原来的商品类型一致');
+        return;
+      }
+
       this.$refs['typeData'].validate((valid) => {
         if (valid) {
-          editType({
-            ...this.typeData,
+          console.log('表单验证通过');
+          this.axios({
+            method: 'post',
+            url: '/editType',
+
+            data: {
+              ...this.typeData,
+              typeId: this.typeId,
+            },
           })
             .then((result) => {
+              console.log('编辑商品类型 result ==> ', result);
               this.openType = false;
               this.search();
             })
@@ -214,9 +180,9 @@ export default {
       });
     },
     commit(formName) {
-      if (this.typeData.typeId) {
+      if (this.typeId) {
         //编辑保存
-        this.confirmeditType(formName);
+        this.editType(formName);
       } else {
         //创建保存
         this.createType(formName);
@@ -287,7 +253,6 @@ export default {
 
     //关闭对话框
     closeDialog() {
-      this.typeData = {};
       this.typeId = '';
     },
   },
