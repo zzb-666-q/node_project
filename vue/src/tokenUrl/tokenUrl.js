@@ -1,0 +1,17 @@
+export const tokenUrl = [
+  "/createType",
+  "/typeList",
+  "/typeCount",
+  "/typeByTypeId",
+  "/editType",
+  "/removeType",
+  "/type",
+  "/postProduct",
+  "/productList",
+  "/productCount",
+  "/updateProductStatus",
+  "/removeProduct",
+  "/product",
+  "/editProduct",
+  "/userInfo",
+];
