@@ -33,7 +33,7 @@
 
 <script>
 import { userLogin } from "@/apis/user";
-import register from "@/views/register.vue";
+import register from "@/views/userInfo/register.vue";
 
 export default {
   name: "login",
@@ -129,7 +129,7 @@ export default {
   width: 100%;
   height: 100vh;
   padding: 100px 0;
-  background: url('../assets/login-background.jpg') no-repeat center center / cover;
+  background: url('../../assets/login-background.jpg') no-repeat center center / cover;
 
   h1 {
     margin-bottom: 20px;
@@ -155,9 +155,9 @@ export default {
 
     }
 
-    /deep/ .el-form-item__label {
-      // color: #fff;
-    }
+    // /deep/ .el-form-item__label {
+       // color: #fff;
+    // }
 
     .validcode-box {
       display: flex;
@@ -191,9 +191,9 @@ export default {
 
     }
 
-    /deep/ .el-form-item__label {
-      // color: #fff;
-    }
+    // /deep/ .el-form-item__label {
+    //   // color: #fff;
+    // }
 
     .validcode-box {
       display: flex;

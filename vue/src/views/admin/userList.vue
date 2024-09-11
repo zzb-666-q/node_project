@@ -110,7 +110,7 @@
 <script>
 import { tool } from "@/tool/tool.js";
 import { getUserlist, sendValidCode } from "@/apis/user";
-import register from "@/views/register.vue";
+import register from "@/views/userInfo/register.vue";
 
 export default {
   name: "userList",

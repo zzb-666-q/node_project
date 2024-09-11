@@ -198,9 +198,9 @@ export default {
 
     }
 
-    /deep/ .el-form-item__label {
-        // color: #fff;
-    }
+    // /deep/ .el-form-item__label {
+    //     // color: #fff;
+    // }
 
     .validcode-box {
         display: flex;

@@ -96,23 +96,7 @@ export default {
             }
           ],
         },
-        // {
-        //   index: "allproduct",
-        //   name: "所有商品管理",
-        //   iconClass: "el-icon-s-goods",
-        //   children: [
-        //     {
-        //       itemIndex: "/allproduct/allproductType",
-        //       itemName: "所有商品类型",
-        //       itemIconClass: "el-icon-s-unfold",
-        //     },
-        //     // {
-        //     //   itemIndex: "/allproduct/ProductList",
-        //     //   itemName: "所有商品列表",
-        //     //   itemIconClass: "el-icon-postcard",
-        //     // },
-        //   ],
-        // },
+     
       ],
       //控制菜单栏展开收起
       isCollapse: false,
@@ -127,7 +111,6 @@ export default {
   },
   methods: {
     handleSelect(obj) {
-      console.log(obj); // 输出当前选中菜单的名称
       this.selectsubmenu(obj);
     },
     selectsubmenu(obj) {
