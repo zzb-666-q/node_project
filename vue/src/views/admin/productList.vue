@@ -1,7 +1,12 @@
 <template>
   <div class="type-list">
     <div>
-      <el-form ref="searchData" :inline="true" :model="searchData" class="demo-form-inline">
+      <el-form
+        ref="searchData"
+        :inline="true"
+        :model="searchData"
+        class="demo-form-inline"
+      >
         <el-form-item label="商品名称" prop="name">
           <el-input
             v-model="searchData.name"
@@ -48,7 +53,9 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="search">搜索</el-button>
-          <el-button type="primary" @click="resetQuery('searchData')">重置</el-button>
+          <el-button type="primary" @click="resetQuery('searchData')"
+            >重置</el-button
+          >
         </el-form-item>
       </el-form>
       <div>
@@ -106,8 +113,7 @@
             <span>{{ scope.row.productName }}</span>
           </template>
         </el-table-column>
-
-        <el-table-column label="商品图片" align="center">
+        <el-table-column label="商品图片" align="center" width="100">
           <template slot-scope="scope">
             <div class="product-img">
               <el-image
@@ -119,7 +125,6 @@
             </div>
           </template>
         </el-table-column>
-
         <el-table-column label="商品类型" align="center">
           <template slot-scope="scope">
             <span>{{ scope.row.name }}</span>
@@ -134,7 +139,7 @@
 
         <el-table-column label="商品状态" align="center">
           <template slot-scope="scope">
-            <span>{{ scope.row.status === 0 ? "上架" : "下架" }}</span>
+            <span>{{ scope.row.status === 0 ? '上架' : '下架' }}</span>
           </template>
         </el-table-column>
 
@@ -173,7 +178,6 @@
         </el-table-column>
       </el-table>
       <div class="page-box">
-        
         <pagination
           v-show="total > 0"
           :total="total"
@@ -209,31 +213,29 @@
     </el-dialog>
   </div>
 </template>
-  
-  <script>
-import { tool } from "@/tool/tool.js";
-import { getProductList, getAlluserProductList } from "@/apis/product";
-import NewProduct from "@/views/NewProduct.vue";
 
+<script>
+import { tool } from '@/tool/tool.js';
+import { getProductList, getAlluserProductList } from '@/apis/product';
+import NewProduct from '@/views/NewProduct.vue';
 
 export default {
-  name: "ProductList",
+  name: 'ProductList',
   components: { NewProduct },
 
   data() {
     return {
       searchData: {
-        name: "",
-        status: "",
-        createdAt: "",
-        typeId: "",
+        name: '',
+        status: '',
+        createdAt: '',
+        typeId: '',
         offset: 1,
         limit: 5,
       },
-      total:0,
-     
+      total: 0,
+
       tableData: [],
-     
 
       open: false,
       openProduct: false,
@@ -244,7 +246,7 @@ export default {
       productIds: [],
 
       //删除当前商品
-      productId: "",
+      productId: '',
     };
   },
 
@@ -269,8 +271,8 @@ export default {
     //获取商品类型
     getProductType() {
       this.axios({
-        method: "get",
-        url: "/type",
+        method: 'get',
+        url: '/type',
       })
         .then((result) => {
           if (result.data.code === 200) {
@@ -281,7 +283,6 @@ export default {
         })
         .catch((err) => {});
     },
-
 
     //搜索
     search() {
@@ -305,27 +306,27 @@ export default {
         productIds = [...this.productIds];
       }
       let that = this;
-      console.log("item, status", item, status);
+      console.log('item, status', item, status);
       if (productIds.length == 0) {
         this.$message({
-          message: "请选择商品",
-          type: "warning",
+          message: '请选择商品',
+          type: 'warning',
         });
         return;
       }
 
       //商品id
       //商品状态
-      this.$confirm(`是否${status == 0 ? "上架" : "下架"}商品`, "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
+      this.$confirm(`是否${status == 0 ? '上架' : '下架'}商品`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
       })
         .then(() => {
           that
             .axios({
-              method: "post",
-              url: "/updateProductStatus",
+              method: 'post',
+              url: '/updateProductStatus',
               data: {
                 productId: productIds,
                 status,
@@ -339,14 +340,14 @@ export default {
             })
             .catch((err) => {});
           this.$message({
-            type: "success",
-            message: `${status == 0 ? "上架" : "下架"}成功!`,
+            type: 'success',
+            message: `${status == 0 ? '上架' : '下架'}成功!`,
           });
         })
         .catch(() => {
           this.$message({
-            type: "info",
-            message: `已取消${status == 0 ? "上架" : "下架"}`,
+            type: 'info',
+            message: `已取消${status == 0 ? '上架' : '下架'}`,
           });
         });
     },
@@ -383,8 +384,8 @@ export default {
 
       //发起请求
       this.axios({
-        method: "post",
-        url: "/removeProduct",
+        method: 'post',
+        url: '/removeProduct',
         data: {
           productIds,
         },
@@ -401,7 +402,7 @@ export default {
     },
 
     closeDialog() {
-      this.productId = "";
+      this.productId = '';
     },
 
     //编辑商品
@@ -413,8 +414,8 @@ export default {
   },
 };
 </script>
-  
-  <style lang="less" scoped>
+
+<style lang="less" scoped>
 .type-list {
   .el-form-item {
     margin-bottom: 15px;

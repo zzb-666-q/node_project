@@ -6,14 +6,19 @@
         <div class="logo-title">后台管理系统</div>
       </div>
       <div class="right-box">
-        <div class="user-img">
+        <el-avatar
+          size="medium"
+          :src="completionImg(userInfo.userImg)"
+        ></el-avatar>
+        <!-- <div class="user-img">
           <img
             :src="completionImg(userInfo.userImg)"
             alt=""
             v-show="userInfo.userImg"
           />
-        </div>
+        </div> -->
         <div class="user-email">{{ userInfo.email }}</div>
+
         <!-- <div class="settings" @click="goLogin">登录</div> -->
         <div class="settings" @click="LoginOut">退出登录</div>
       </div>

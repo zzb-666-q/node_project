@@ -101,8 +101,7 @@
             <span>{{ scope.row.productName }}</span>
           </template>
         </el-table-column>
-
-        <el-table-column label="商品图片" align="center" width="80">
+        <el-table-column label="商品图片" align="center" width="100">
           <template slot-scope="scope">
             <div class="product-img">
               <el-image
@@ -114,7 +113,6 @@
             </div>
           </template>
         </el-table-column>
-
         <el-table-column label="商品类型" align="center">
           <template slot-scope="scope">
             <span>{{ scope.row.name }}</span>
@@ -129,7 +127,7 @@
 
         <el-table-column label="商品状态" align="center">
           <template slot-scope="scope">
-            <span>{{ scope.row.status === 0 ? "上架" : "下架" }}</span>
+            <span>{{ scope.row.status === 0 ? '上架' : '下架' }}</span>
           </template>
         </el-table-column>
 
@@ -139,7 +137,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="操作" align="center" width="300" fixed>
+        <el-table-column label="操作" align="center" width="300" fixed="right">
           <template slot-scope="scope">
             <el-button size="mini" @click="editProduct(scope.row.productId)"
               >编辑</el-button
@@ -207,26 +205,26 @@
 </template>
 
 <script>
-const axios = require("axios");
-import { tool } from "@/tool/tool.js";
+const axios = require('axios');
+import { tool } from '@/tool/tool.js';
 import {
   getProductList,
   getType,
   updateProductStatus,
   removeProduct,
-} from "@/apis/product";
-import NewProduct from "@/views/NewProduct.vue";
+} from '@/apis/product';
+import NewProduct from '@/views/NewProduct.vue';
 
 export default {
-  name: "ProductList",
+  name: 'ProductList',
   components: { NewProduct },
   data() {
     return {
       searchData: {
-        name: "",
-        status: "",
-        createdAt: "",
-        typeId: "",
+        name: '',
+        status: '',
+        createdAt: '',
+        typeId: '',
         offset: 1,
         limit: 5,
       },
@@ -244,7 +242,7 @@ export default {
       productIds: [],
 
       //删除当前商品
-      productId: "",
+      productId: '',
     };
   },
 
@@ -294,10 +292,10 @@ export default {
         productIds = [...this.productIds];
       }
       let that = this;
-      this.$confirm(`是否${status == 0 ? "上架" : "下架"}商品`, "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
+      this.$confirm(`是否${status == 0 ? '上架' : '下架'}商品`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
       })
         .then(() => {
           let data = {
@@ -312,14 +310,14 @@ export default {
           });
 
           this.$message({
-            type: "success",
-            message: `${status == 0 ? "上架" : "下架"}成功!`,
+            type: 'success',
+            message: `${status == 0 ? '上架' : '下架'}成功!`,
           });
         })
         .catch(() => {
           this.$message({
-            type: "info",
-            message: `已取消${status == 0 ? "上架" : "下架"}`,
+            type: 'info',
+            message: `已取消${status == 0 ? '上架' : '下架'}`,
           });
         });
     },
@@ -363,7 +361,7 @@ export default {
     },
 
     closeDialog() {
-      this.productId = "";
+      this.productId = '';
     },
 
     //编辑或创建商品

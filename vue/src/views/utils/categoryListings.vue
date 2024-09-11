@@ -1,281 +1,169 @@
 <template>
-  <div class="type-list">
-    <div>
-      <el-form
-        ref="searchData"
-        :inline="true"
-        :model="searchData"
-        class="demo-form-inline"
+  <div class="CategoryListings">
+    <div class="custom-tree-container">
+      <!-- <div class="block">
+      <p>使用 render-content</p>
+      <el-tree
+        :data="data"
+        show-checkbox
+        node-key="id"
+        default-expand-all
+        :expand-on-click-node="false"
+        :render-content="renderContent"
       >
-        <el-form-item label="类型名称" prop="name">
-          <el-input
-            v-model="searchData.name"
-            placeholder="类型名称"
-            clearable
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="创建日期" prop="createdAt">
-          <!-- <el-date-picker v-model="searchData.createdAt" type="date" placeholder="选择日期" value-format="yyyy-MM-dd"></el-date-picker> -->
-          <el-date-picker
-            v-model="searchData.createdAt"
-            type="month"
-            placeholder="选择月"
-            value-format="yyyy-MM"
-          >
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="search">搜索</el-button>
-          <el-button type="primary" @click="resetQuery('searchData')"
-            >重置</el-button
-          >
-        </el-form-item>
-      </el-form>
-      <div>
-        <el-button type="primary" @click="openTypes">创建商品类型</el-button>
-        <el-button
-          type="danger"
-          :disabled="typeIds.length === 0"
-          @click="confirmRemoveType"
-          >删除选择</el-button
+      </el-tree>
+    </div> -->
+      <div class="block">
+        <p>使用 scoped slot</p>
+        <el-tree
+          :data="data"
+          show-checkbox
+          ref="tree"
+          node-key="id"
+          default-expand-all
+          :expand-on-click-node="false"
+          :props="defaultProps"
         >
+          <span class="custom-tree-node" slot-scope="{ node, data }">
+            <span>{{ node.label }}</span>
+            <span>
+              <el-button type="text" size="mini" @click="() => append(data)">
+                Append
+              </el-button>
+              <el-button
+                type="text"
+                size="mini"
+                @click="() => remove(node, data)"
+              >
+                Delete
+              </el-button>
+            </span>
+          </span>
+        </el-tree>
       </div>
     </div>
-    <!-- <div class="list-box">
-      <el-table
-        :data="tableData"
-        style="width: 100%"
-        border
-        @selection-change="selectionData"
-      >
-        <el-table-column type="selection" width="55" align="center">
-        </el-table-column>
-
-        <el-table-column label="序号" width="50" align="center">
-          <template slot-scope="scope">
-            <span>{{ scope.$index + 1 }}</span>
-          </template>
-        </el-table-column>
-
-        <el-table-column label="商品类型" width="180">
-          <template slot-scope="scope">
-            <span>{{ scope.row.name }}</span>
-          </template>
-        </el-table-column>
-
-        <el-table-column label="创建日期" width="300">
-          <template slot-scope="scope">
-            <span>{{ scope.row.createdAt }}</span>
-          </template>
-        </el-table-column>
-
-        <el-table-column label="操作">
-          <template slot-scope="scope"> </template>
-        </el-table-column>
-      </el-table>
-      <div class="page-box">
-        <pagination
-          v-show="total > 0"
-          :total="total"
-          :page.sync="searchData.offset"
-          :limit.sync="searchData.limit"
-          @pagination="getList"
-        />
-      </div>
-    </div> -->
-    <el-tree
-      :data="data"
-      :props="defaultProps"
-      accordion
-      @node-click="handleNodeClick"
-    >
-    </el-tree>
+    <div class="buttons">
+      <el-button @click="getCheckedNodes">通过 node 获取</el-button>
+      <el-button @click="getCheckedKeys">通过 key 获取</el-button>
+      <el-button @click="setCheckedNodes">通过 node 设置</el-button>
+      <el-button @click="setCheckedKeys">通过 key 设置</el-button>
+      <el-button @click="resetChecked">清空</el-button>
+    </div>
   </div>
 </template>
 
 <script>
-import { userTypeList, createType } from '@/apis/product';
+let id = 1000;
+
 export default {
-  name: 'TypeList',
+  name: 'CategoryListings',
   data() {
+    const data = [
+      {
+        id: 1,
+        label: '一级 1',
+        children: [
+          {
+            id: 4,
+            label: '二级 1-1',
+            children: [
+              {
+                id: 9,
+                label: '三级 1-1-1',
+              },
+              {
+                id: 10,
+                label: '三级 1-1-2',
+              },
+            ],
+          },
+        ],
+      },
+    ];
     return {
-      searchData: {
-        name: '',
-        createdAt: '',
-        offset: 1,
-        limit: 5,
-      },
-      tableData: [],
-      //选择商品类型的typeId
-      typeIds: [],
-      typeId: '',
-      total: 0,
-      centerDialogVisible: false,
-      openType: false,
-      typeData: {
-        name: '',
-        typeId: '',
-      },
-      rules: {
-        name: [{ required: true, message: '邮箱不能为空', trigger: 'blur' }],
+      data: JSON.parse(JSON.stringify(data)),
+      data: JSON.parse(JSON.stringify(data)),
+      defaultProps: {
+        children: 'children',
+        label: 'label',
       },
     };
   },
 
-  created() {
-    this.getList();
-  },
-
   methods: {
-    openTypes() {
-      this.openType = true;
-    },
-    /** 重置按钮操作 */
-    resetQuery(formName) {
-      this.resetForm(formName);
-      this.search();
-    },
-
-    //创建商品类型
-    createType(formName) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          console.log('表单验证通过');
-          createType(this.typeData).then((res) => {
-            this.openType = false;
-            this.search();
-            this.typeData = {};
-          });
-        }
-      });
-    },
-    //编辑商品类型
-    editType() {
-      if (this.copyName === this.typeData.name) {
-        console.log('和原来的商品类型一致');
-        return;
+    append(data) {
+      const newChild = { id: id++, label: 'testtest', children: [] };
+      if (!data.children) {
+        this.$set(data, 'children', []);
       }
-
-      this.$refs['typeData'].validate((valid) => {
-        if (valid) {
-          console.log('表单验证通过');
-          this.axios({
-            method: 'post',
-            url: '/editType',
-
-            data: {
-              ...this.typeData,
-              typeId: this.typeId,
-            },
-          })
-            .then((result) => {
-              console.log('编辑商品类型 result ==> ', result);
-              this.openType = false;
-              this.search();
-            })
-            .catch((err) => {
-              console.log('err ==> ', err);
-            });
-        }
-      });
-    },
-    commit(formName) {
-      if (this.typeId) {
-        //编辑保存
-        this.editType(formName);
-      } else {
-        //创建保存
-        this.createType(formName);
-      }
+      data.children.push(newChild);
     },
 
-    getList() {
-      userTypeList(this.searchData).then((res) => {
-        this.tableData = res.data.result;
-        this.total = res.data.count;
-      });
+    remove(node, data) {
+      const parent = node.parent;
+      const children = parent.data.children || parent.data;
+      const index = children.findIndex((d) => d.id === data.id);
+      children.splice(index, 1);
     },
 
-    //搜索
-    search() {
-      this.searchData.offset = 1;
-      this.getList();
+    renderContent(h, { node, data, store }) {
+      return (
+        <span class="custom-tree-node">
+          <span>{node.label}</span>
+          <span>
+            <el-button
+              size="mini"
+              type="text"
+              on-click={() => this.append(data)}
+            >
+              Append
+            </el-button>
+            <el-button
+              size="mini"
+              type="text"
+              on-click={() => this.remove(node, data)}
+            >
+              Delete
+            </el-button>
+          </span>
+        </span>
+      );
     },
 
-    //选择表格数据
-    selectionData(value) {
-      //
-      let typeIds = [];
-      value.forEach((v) => {
-        typeIds.push(v.typeId);
-      });
-
-      this.typeIds = typeIds;
+    getCheckedNodes() {
+      console.log(this.$refs.tree.getCheckedNodes());
     },
-
-    //删除商品类型
-    removeType(typeId) {
-      this.centerDialogVisible = true;
-      this.typeId = typeId;
+    getCheckedKeys() {
+      console.log(this.$refs.tree.getCheckedKeys());
     },
-
-    //确认删除商品类型
-    confirmRemoveType() {
-      // return;
-      let typeIds = [];
-
-      //单个删除
-      if (this.typeId) {
-        typeIds = [this.typeId];
-      } else {
-        //多个删除
-        typeIds = [...this.typeIds];
-      }
-
-      this.axios({
-        method: 'post',
-        url: '/removeType',
-        data: {
-          typeIds,
+    setCheckedNodes() {
+      this.$refs.tree.setCheckedNodes([
+        {
+          id: 1,
+          label: '一级 1',
         },
-      })
-        .then((result) => {
-          if (result.data.code === 200) {
-            //重置页面数据
-            this.search();
-
-            // this.typeId = '';
-          }
-          this.centerDialogVisible = false;
-        })
-        .catch((err) => {});
+      ]);
     },
-
-    //关闭对话框
-    closeDialog() {
-      this.typeId = '';
+    setCheckedKeys() {
+      this.$refs.tree.setCheckedKeys([3]);
+    },
+    resetChecked() {
+      this.$refs.tree.setCheckedKeys([]);
     },
   },
 };
 </script>
 
 <style lang="less" scoped>
-.type-list {
-  .el-form-item {
-    margin-bottom: 15px;
-  }
-
-  .list-box {
-    margin-top: 30px;
-  }
-
-  .page-box {
-    text-align: center;
-    margin-top: 15px;
-  }
-
-  .dialog-title {
-    text-align: center;
-  }
+.custom-tree-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  // justify-content: space-between;
+  font-size: 14px;
+  padding-right: 8px;
+}
+.block {
+  width: 50%;
 }
 </style>
